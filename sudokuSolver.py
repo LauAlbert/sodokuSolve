@@ -1,32 +1,44 @@
 # -*- coding: utf-8 -*-
 """
-Spyder Editor
+Created on Mon Oct  2 22:30:16 2017
 
-This is a temporary script file.
+@author: Albert-Desktop
 """
-import numpy as np
+
+import cv2
 import math
+import numpy as np
+from keras.models import load_model
 
-original = np.array([[7, 0, 6, 0, 0, 0, 0, 0, 2], 
-                      [0, 3, 0, 9, 0, 0, 0, 0, 0],
-                      [0, 0, 4, 1, 0, 0, 6, 0, 0],
-                      [0, 7, 5, 2, 0, 0, 0, 0, 0],
-                      [0, 0, 0, 4, 0, 7, 0, 0, 0],
-                      [0, 0, 0, 0, 0, 8, 2, 9, 0],
-                      [0, 0, 8, 0, 0, 5, 7, 0, 0],
-                      [0, 0, 0, 0, 0, 6, 0, 5, 0],
-                      [5, 0, 0, 0, 0, 0, 1, 0, 6]])
+# load trained CNN model (created from cnn.py)
+model = load_model('my_model.h5')
 
-original2 = np.array([[0, 0, 0, 7, 0, 0, 0, 0, 6], 
-                      [0, 0, 0, 0, 5, 0, 2, 7, 0],
-                      [0, 0, 0, 2, 9, 0, 8, 5, 4],
-                      [0, 0, 4, 0, 6, 0, 9, 0, 0],
-                      [9, 0, 0, 0, 2, 0, 0, 0, 5],
-                      [0, 0, 2, 0, 1, 0, 6, 0, 0],
-                      [7, 9, 1, 0, 4, 6, 0, 0, 0],
-                      [0, 4, 8, 0, 7, 0, 0, 0, 0],
-                      [6, 0, 0, 0, 0, 9, 0, 0, 0]])
+# read in a picture of a sudoku puzzle
+sudokuPuzzle = cv2.imread("sudoku.png")
+h, w, c = sudokuPuzzle.shape
 
+sudoku = []
+
+for row in range(9):
+    sudokuRow = []
+    for col in range(9):
+        x = int(w/9) * col
+        y = int(h/9) * row
+        crop_img = sudokuPuzzle[y:y+int(h/9), x:x+int(w/9)] # Crop from x, y, w, h -> 100, 200, 300, 400
+        # NOTE: its img[y: y + h, x: x + w] and *not* img[x: x + w, y: y + h]
+        gray_img = cv2.cvtColor(crop_img, cv2.COLOR_BGR2GRAY)
+        img = cv2.resize(gray_img, (28,28))
+        img = 255-img
+        img = img.reshape(1, 28, 28, 1)
+        sudokuRow.append(np.argmax(model.predict(img)))
+
+    sudoku.append(sudokuRow)
+    
+
+
+
+# Algorithm to solve the Sodoku Puzzle
+sudoku = np.array(sudoku)
 possibleValues = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 
 
@@ -65,5 +77,6 @@ def solve(row, col, puzzle):
             return found
         return None
     
-solvePuzzle = solve(0, 0, original)
-solvePuzzle2 = solve(0, 0, original2)
+solvePuzzle = solve(0, 0, sudoku)
+
+print(solvePuzzle)        
