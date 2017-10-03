@@ -2,7 +2,7 @@
 
 ## cnn.py
 
-My convolution neural network I created for digit recognition. I altered the mnist dataset so it treats black as 0.
+My convolution neural network I created for digit recognition. I altered the mnist dataset so it treats blanks as zeros.
 
 ## my_model.h5
 
