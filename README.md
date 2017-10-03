@@ -12,3 +12,10 @@ A save train digit recognition model created by cnn.py
 
 A script that solve a sudoku given an image. In sudokuSolver.py change the directory for "sudokuPuzzle" to your sudoku puzzle. Run the script and it will print out the solve puzzle.
 
+# Screenshot
+
+# Input
+![Application Image](https://github.com/LauAlbert/sodokuSolve/blob/master/sudoku.png)
+
+# Output
+![Application Image](https://github.com/LauAlbert/sodokuSolve/blob/master/solve.png)
